@@ -190,6 +190,11 @@ _G.packer_plugins = {
     path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/rose-pine",
     url = "https://github.com/rose-pine/neovim"
   },
+  ["scope.nvim"] = {
+    loaded = true,
+    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/scope.nvim",
+    url = "https://github.com/tiagovla/scope.nvim"
+  },
   ["telescope.nvim"] = {
     loaded = true,
     path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/telescope.nvim",

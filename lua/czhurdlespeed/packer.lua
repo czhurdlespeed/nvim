@@ -1,5 +1,5 @@
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
-
+-- Run :so to source file; then you can issue :Packer commands!!!
 -- Only required if you have packer configured as `opt`
 vim.cmd.packadd('packer.nvim')
 
