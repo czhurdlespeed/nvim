@@ -29,6 +29,10 @@ lsp.setup_nvim_cmp({
   mapping = cmp_mappings
 })
 
+for _, group in ipairs(vim.fn.getcompletion("@lsp","highlight")) do 
+    vim.api.nvim_set_hl(0,group,{})
+end
+
 lsp.set_preferences({
     suggest_lsp_servers = false,
     sign_icons = {
