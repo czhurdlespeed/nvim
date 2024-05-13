@@ -1,3 +1,4 @@
+--[[
 require('rose-pine').setup({
     disable_background = true
 })
@@ -12,3 +13,9 @@ function ColorMyPencils(color)
 end
 
 ColorMyPencils()
+--]]
+require("tokyonight").setup({
+    on_colors = function(colors)
+        colors.comment = "#ffffff"
+    end
+})
