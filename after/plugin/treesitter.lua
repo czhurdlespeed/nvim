@@ -12,7 +12,8 @@ require'nvim-treesitter.configs'.setup {
 
   -- Use treesitter :Inspect command in vim to determine the @name of the syntax element
   
-  vim.cmd('hi! @number.cpp guifg=#b31942'),
+
+  vim.cmd('hi! @comment guifg=#ffffff gui=italic'),
 
 
   highlight = {
