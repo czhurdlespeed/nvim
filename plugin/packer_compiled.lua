@@ -79,6 +79,12 @@ _G.packer_plugins = {
     path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/LuaSnip",
     url = "https://github.com/L3MON4D3/LuaSnip"
   },
+  ale = {
+    config = { "\27LJ\2\n�\5\0\0\3\0\31\00076\0\0\0009\0\1\0005\1\4\0005\2\3\0=\2\5\0015\2\6\0=\2\a\1=\1\2\0006\0\0\0009\0\1\0005\1\n\0005\2\t\0=\2\5\0015\2\v\0=\2\a\0015\2\f\0=\2\r\0015\2\14\0=\2\15\0015\2\16\0=\2\17\0015\2\18\0=\2\19\0015\2\20\0=\2\21\1=\1\b\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0006\0\0\0009\0\1\0'\1\24\0=\1\23\0006\0\0\0009\0\1\0'\1\26\0=\1\25\0006\0\0\0009\0\1\0)\1\1\0=\1\27\0006\0\0\0009\0\1\0)\1\1\0=\1\28\0006\0\0\0009\0\1\0'\1\30\0=\1\29\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0K\0\1\0\31[%linter%] %s [%severity%]\24ale_echo_msg_format\25ale_linters_explicit\27ale_completion_enabled\b⚠\21ale_sign_warning\b✘\19ale_sign_error\20ale_fix_on_save\rmarkdown\1\2\0\0\rprettier\tjson\1\2\0\0\rprettier\thtml\1\2\0\0\rprettier\bcss\1\2\0\0\rprettier\15typescript\1\3\0\0\rprettier\veslint\1\3\0\0\rprettier\veslint\1\0\a\vpython\0\tjson\0\rmarkdown\0\15typescript\0\thtml\0\bcss\0\15javascript\0\1\3\0\0\nblack\nisort\15ale_fixers\15javascript\1\2\0\0\veslint\vpython\1\0\2\vpython\0\15javascript\0\1\3\0\0\vflake8\vpylint\16ale_linters\6g\bvim\0" },
+    loaded = true,
+    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/ale",
+    url = "https://github.com/dense-analysis/ale"
+  },
   ["cellular-automaton.nvim"] = {
     loaded = true,
     path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cellular-automaton.nvim",
@@ -224,6 +230,10 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: ale
+time([[Config for ale]], true)
+try_loadstring("\27LJ\2\n�\5\0\0\3\0\31\00076\0\0\0009\0\1\0005\1\4\0005\2\3\0=\2\5\0015\2\6\0=\2\a\1=\1\2\0006\0\0\0009\0\1\0005\1\n\0005\2\t\0=\2\5\0015\2\v\0=\2\a\0015\2\f\0=\2\r\0015\2\14\0=\2\15\0015\2\16\0=\2\17\0015\2\18\0=\2\19\0015\2\20\0=\2\21\1=\1\b\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0006\0\0\0009\0\1\0'\1\24\0=\1\23\0006\0\0\0009\0\1\0'\1\26\0=\1\25\0006\0\0\0009\0\1\0)\1\1\0=\1\27\0006\0\0\0009\0\1\0)\1\1\0=\1\28\0006\0\0\0009\0\1\0'\1\30\0=\1\29\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0K\0\1\0\31[%linter%] %s [%severity%]\24ale_echo_msg_format\25ale_linters_explicit\27ale_completion_enabled\b⚠\21ale_sign_warning\b✘\19ale_sign_error\20ale_fix_on_save\rmarkdown\1\2\0\0\rprettier\tjson\1\2\0\0\rprettier\thtml\1\2\0\0\rprettier\bcss\1\2\0\0\rprettier\15typescript\1\3\0\0\rprettier\veslint\1\3\0\0\rprettier\veslint\1\0\a\vpython\0\tjson\0\rmarkdown\0\15typescript\0\thtml\0\bcss\0\15javascript\0\1\3\0\0\nblack\nisort\15ale_fixers\15javascript\1\2\0\0\veslint\vpython\1\0\2\vpython\0\15javascript\0\1\3\0\0\vflake8\vpylint\16ale_linters\6g\bvim\0", "config", "ale")
+time([[Config for ale]], false)
 -- Config for: trouble.nvim
 time([[Config for trouble.nvim]], true)
 try_loadstring("\27LJ\2\nC\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\nicons\1\nsetup\ftrouble\frequire\0", "config", "trouble.nvim")

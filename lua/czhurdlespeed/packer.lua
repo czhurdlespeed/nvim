@@ -44,7 +44,48 @@ return require('packer').startup(function(use)
   use("mbbill/undotree")
   use("tpope/vim-fugitive")
   use("nvim-treesitter/nvim-treesitter-context");
-
+  -- Add ALE
+  use {
+    'dense-analysis/ale',
+    config = function()
+      -- ALE configuration
+      vim.g.ale_linters = {
+        python = {'flake8', 'pylint'},
+        javascript = {'eslint'},
+        -- Add more languages and linters as needed
+      }
+      
+      vim.g.ale_fixers = {
+        python = {'black', 'isort'},
+        javascript = {'prettier', 'eslint'},
+        typescript = {'prettier', 'eslint'},
+        css = {'prettier'},
+        html = {'prettier'},
+        json = {'prettier'},
+        markdown = {'prettier'},
+        -- Add more languages and fixers as needed
+      }
+      
+      -- Enable fixing on save
+      vim.g.ale_fix_on_save = 1
+      
+      -- Set signs for errors and warnings
+      vim.g.ale_sign_error = '✘'
+      vim.g.ale_sign_warning = '⚠'
+      
+      -- Enable completion where available
+      vim.g.ale_completion_enabled = 1
+      
+      -- Only run linters named in ale_linters settings
+      vim.g.ale_linters_explicit = 1
+      
+      -- Customize the error and warning format
+      vim.g.ale_echo_msg_format = '[%linter%] %s [%severity%]'
+      
+      -- Set this variable to 1 to fix files when you save them.
+      vim.g.ale_fix_on_save = 1
+    end
+  }
   use {
 	  'VonHeikemen/lsp-zero.nvim',
 	  branch = 'v1.x',
