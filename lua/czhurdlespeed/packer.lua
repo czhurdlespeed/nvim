@@ -50,13 +50,13 @@ return require('packer').startup(function(use)
     config = function()
       -- ALE configuration
       vim.g.ale_linters = {
-        python = {'flake8', 'pylint'},
+        python = {'autoflake'},
         javascript = {'eslint'},
         -- Add more languages and linters as needed
       }
       
       vim.g.ale_fixers = {
-        python = {'black', 'isort'},
+        python = {'autopep8'},
         javascript = {'prettier', 'eslint'},
         typescript = {'prettier', 'eslint'},
         css = {'prettier'},
