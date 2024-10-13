@@ -57,6 +57,27 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 end)
 
+-- Function to get the active pyenv Python path
+local function get_python_path()
+    -- Try to get the path from pyenv
+    local pyenv_path = vim.fn.trim(vim.fn.system('pyenv which python'))
+    
+    -- If pyenv command failed or returned empty, fallback to system Python
+    if vim.v.shell_error ~= 0 or pyenv_path == '' then
+        return vim.fn.exepath('python')
+    end
+    
+    return pyenv_path
+end  
+
+-- Configure Pyright to use the active Python interpreter
+lsp.configure('pyright', {
+  before_init = function(_, config)
+    config.settings.python.pythonPath = get_python_path()
+  end,
+})
+
+
 lsp.setup()
 
 vim.diagnostic.config({
