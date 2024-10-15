@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/Users/calwetzel/.cache/nvim/packer_hererocks/2.1.1727870382/share/lua/5.1/?.lua;/Users/calwetzel/.cache/nvim/packer_hererocks/2.1.1727870382/share/lua/5.1/?/init.lua;/Users/calwetzel/.cache/nvim/packer_hererocks/2.1.1727870382/lib/luarocks/rocks-5.1/?.lua;/Users/calwetzel/.cache/nvim/packer_hererocks/2.1.1727870382/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/Users/calwetzel/.cache/nvim/packer_hererocks/2.1.1727870382/lib/lua/5.1/?.so"
+local package_path_str = "/home/ujw/.cache/nvim/packer_hererocks/2.1.1713484068/share/lua/5.1/?.lua;/home/ujw/.cache/nvim/packer_hererocks/2.1.1713484068/share/lua/5.1/?/init.lua;/home/ujw/.cache/nvim/packer_hererocks/2.1.1713484068/lib/luarocks/rocks-5.1/?.lua;/home/ujw/.cache/nvim/packer_hererocks/2.1.1713484068/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/home/ujw/.cache/nvim/packer_hererocks/2.1.1713484068/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -76,172 +76,172 @@ time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
   LuaSnip = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/LuaSnip",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/LuaSnip",
     url = "https://github.com/L3MON4D3/LuaSnip"
   },
   ale = {
-    config = { "\27LJ\2\n�\5\0\0\3\0\31\00076\0\0\0009\0\1\0005\1\4\0005\2\3\0=\2\5\0015\2\6\0=\2\a\1=\1\2\0006\0\0\0009\0\1\0005\1\n\0005\2\t\0=\2\5\0015\2\v\0=\2\a\0015\2\f\0=\2\r\0015\2\14\0=\2\15\0015\2\16\0=\2\17\0015\2\18\0=\2\19\0015\2\20\0=\2\21\1=\1\b\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0006\0\0\0009\0\1\0'\1\24\0=\1\23\0006\0\0\0009\0\1\0'\1\26\0=\1\25\0006\0\0\0009\0\1\0)\1\1\0=\1\27\0006\0\0\0009\0\1\0)\1\1\0=\1\28\0006\0\0\0009\0\1\0'\1\30\0=\1\29\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0K\0\1\0\31[%linter%] %s [%severity%]\24ale_echo_msg_format\25ale_linters_explicit\27ale_completion_enabled\b⚠\21ale_sign_warning\b✘\19ale_sign_error\20ale_fix_on_save\rmarkdown\1\2\0\0\rprettier\tjson\1\2\0\0\rprettier\thtml\1\2\0\0\rprettier\bcss\1\2\0\0\rprettier\15typescript\1\3\0\0\rprettier\veslint\1\3\0\0\rprettier\veslint\1\0\a\bcss\0\15javascript\0\tjson\0\15typescript\0\vpython\0\thtml\0\rmarkdown\0\1\2\0\0\rautopep8\15ale_fixers\15javascript\1\2\0\0\veslint\vpython\1\0\2\15javascript\0\vpython\0\1\2\0\0\14autoflake\16ale_linters\6g\bvim\0" },
+    config = { "\27LJ\2\n�\5\0\0\3\0\31\00076\0\0\0009\0\1\0005\1\4\0005\2\3\0=\2\5\0015\2\6\0=\2\a\1=\1\2\0006\0\0\0009\0\1\0005\1\n\0005\2\t\0=\2\5\0015\2\v\0=\2\a\0015\2\f\0=\2\r\0015\2\14\0=\2\15\0015\2\16\0=\2\17\0015\2\18\0=\2\19\0015\2\20\0=\2\21\1=\1\b\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0006\0\0\0009\0\1\0'\1\24\0=\1\23\0006\0\0\0009\0\1\0'\1\26\0=\1\25\0006\0\0\0009\0\1\0)\1\1\0=\1\27\0006\0\0\0009\0\1\0)\1\1\0=\1\28\0006\0\0\0009\0\1\0'\1\30\0=\1\29\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0K\0\1\0\31[%linter%] %s [%severity%]\24ale_echo_msg_format\25ale_linters_explicit\27ale_completion_enabled\b⚠\21ale_sign_warning\b✘\19ale_sign_error\20ale_fix_on_save\rmarkdown\1\2\0\0\rprettier\tjson\1\2\0\0\rprettier\thtml\1\2\0\0\rprettier\bcss\1\2\0\0\rprettier\15typescript\1\3\0\0\rprettier\veslint\1\3\0\0\rprettier\veslint\1\0\a\rmarkdown\0\bcss\0\tjson\0\15typescript\0\vpython\0\thtml\0\15javascript\0\1\2\0\0\rautopep8\15ale_fixers\15javascript\1\2\0\0\veslint\vpython\1\0\2\15javascript\0\vpython\0\1\2\0\0\14autoflake\16ale_linters\6g\bvim\0" },
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/ale",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/ale",
     url = "https://github.com/dense-analysis/ale"
   },
   ["cellular-automaton.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cellular-automaton.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cellular-automaton.nvim",
     url = "https://github.com/eandrju/cellular-automaton.nvim"
   },
   ["cloak.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cloak.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cloak.nvim",
     url = "https://github.com/laytan/cloak.nvim"
   },
   ["cmp-buffer"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cmp-buffer",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cmp-buffer",
     url = "https://github.com/hrsh7th/cmp-buffer"
   },
   ["cmp-nvim-lsp"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
     url = "https://github.com/hrsh7th/cmp-nvim-lsp"
   },
   ["cmp-nvim-lua"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cmp-nvim-lua",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cmp-nvim-lua",
     url = "https://github.com/hrsh7th/cmp-nvim-lua"
   },
   ["cmp-path"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cmp-path",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cmp-path",
     url = "https://github.com/hrsh7th/cmp-path"
   },
   cmp_luasnip = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
   },
   ["copilot.vim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/copilot.vim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/copilot.vim",
     url = "https://github.com/github/copilot.vim"
   },
   ["friendly-snippets"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/friendly-snippets",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/friendly-snippets",
     url = "https://github.com/rafamadriz/friendly-snippets"
   },
   harpoon = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/harpoon",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/harpoon",
     url = "https://github.com/theprimeagen/harpoon"
   },
   ["lsp-zero.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/lsp-zero.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/lsp-zero.nvim",
     url = "https://github.com/VonHeikemen/lsp-zero.nvim"
   },
   ["mason-lspconfig.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/mason-lspconfig.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/mason-lspconfig.nvim",
     url = "https://github.com/williamboman/mason-lspconfig.nvim"
   },
   ["mason.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/mason.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
   },
   ["nvim-cmp"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/nvim-cmp",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/nvim-cmp",
     url = "https://github.com/hrsh7th/nvim-cmp"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/nvim-lspconfig",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/nvim-lspconfig",
     url = "https://github.com/neovim/nvim-lspconfig"
   },
   ["nvim-treesitter"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/nvim-treesitter",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/nvim-treesitter",
     url = "https://github.com/nvim-treesitter/nvim-treesitter"
   },
   ["nvim-treesitter-context"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/nvim-treesitter-context",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/nvim-treesitter-context",
     url = "https://github.com/nvim-treesitter/nvim-treesitter-context"
   },
   ["packer.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/packer.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
   },
   playground = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/playground",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/playground",
     url = "https://github.com/nvim-treesitter/playground"
   },
   ["plenary.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/plenary.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
   },
   ["refactoring.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/refactoring.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/refactoring.nvim",
     url = "https://github.com/theprimeagen/refactoring.nvim"
   },
   ["scope.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/scope.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/scope.nvim",
     url = "https://github.com/tiagovla/scope.nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/telescope.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
   tokyonight = {
     config = { "\27LJ\2\n@\0\0\3\0\3\0\0056\0\0\0009\0\1\0'\2\2\0B\0\2\1K\0\1\0!colorscheme tokyonight-night\bcmd\bvim\0" },
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/tokyonight",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/tokyonight",
     url = "https://github.com/folke/tokyonight.nvim"
   },
   ["trouble.nvim"] = {
     config = { "\27LJ\2\nC\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\nicons\1\nsetup\ftrouble\frequire\0" },
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/trouble.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/trouble.nvim",
     url = "https://github.com/folke/trouble.nvim"
   },
   undotree = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/undotree",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/undotree",
     url = "https://github.com/mbbill/undotree"
   },
   ["vim-fugitive"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/vim-fugitive",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/vim-fugitive",
     url = "https://github.com/tpope/vim-fugitive"
   },
   ["zen-mode.nvim"] = {
     loaded = true,
-    path = "/Users/calwetzel/.local/share/nvim/site/pack/packer/start/zen-mode.nvim",
+    path = "/home/ujw/.local/share/nvim/site/pack/packer/start/zen-mode.nvim",
     url = "https://github.com/folke/zen-mode.nvim"
   }
 }
 
 time([[Defining packer_plugins]], false)
--- Config for: tokyonight
-time([[Config for tokyonight]], true)
-try_loadstring("\27LJ\2\n@\0\0\3\0\3\0\0056\0\0\0009\0\1\0'\2\2\0B\0\2\1K\0\1\0!colorscheme tokyonight-night\bcmd\bvim\0", "config", "tokyonight")
-time([[Config for tokyonight]], false)
 -- Config for: ale
 time([[Config for ale]], true)
-try_loadstring("\27LJ\2\n�\5\0\0\3\0\31\00076\0\0\0009\0\1\0005\1\4\0005\2\3\0=\2\5\0015\2\6\0=\2\a\1=\1\2\0006\0\0\0009\0\1\0005\1\n\0005\2\t\0=\2\5\0015\2\v\0=\2\a\0015\2\f\0=\2\r\0015\2\14\0=\2\15\0015\2\16\0=\2\17\0015\2\18\0=\2\19\0015\2\20\0=\2\21\1=\1\b\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0006\0\0\0009\0\1\0'\1\24\0=\1\23\0006\0\0\0009\0\1\0'\1\26\0=\1\25\0006\0\0\0009\0\1\0)\1\1\0=\1\27\0006\0\0\0009\0\1\0)\1\1\0=\1\28\0006\0\0\0009\0\1\0'\1\30\0=\1\29\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0K\0\1\0\31[%linter%] %s [%severity%]\24ale_echo_msg_format\25ale_linters_explicit\27ale_completion_enabled\b⚠\21ale_sign_warning\b✘\19ale_sign_error\20ale_fix_on_save\rmarkdown\1\2\0\0\rprettier\tjson\1\2\0\0\rprettier\thtml\1\2\0\0\rprettier\bcss\1\2\0\0\rprettier\15typescript\1\3\0\0\rprettier\veslint\1\3\0\0\rprettier\veslint\1\0\a\bcss\0\15javascript\0\tjson\0\15typescript\0\vpython\0\thtml\0\rmarkdown\0\1\2\0\0\rautopep8\15ale_fixers\15javascript\1\2\0\0\veslint\vpython\1\0\2\15javascript\0\vpython\0\1\2\0\0\14autoflake\16ale_linters\6g\bvim\0", "config", "ale")
+try_loadstring("\27LJ\2\n�\5\0\0\3\0\31\00076\0\0\0009\0\1\0005\1\4\0005\2\3\0=\2\5\0015\2\6\0=\2\a\1=\1\2\0006\0\0\0009\0\1\0005\1\n\0005\2\t\0=\2\5\0015\2\v\0=\2\a\0015\2\f\0=\2\r\0015\2\14\0=\2\15\0015\2\16\0=\2\17\0015\2\18\0=\2\19\0015\2\20\0=\2\21\1=\1\b\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0006\0\0\0009\0\1\0'\1\24\0=\1\23\0006\0\0\0009\0\1\0'\1\26\0=\1\25\0006\0\0\0009\0\1\0)\1\1\0=\1\27\0006\0\0\0009\0\1\0)\1\1\0=\1\28\0006\0\0\0009\0\1\0'\1\30\0=\1\29\0006\0\0\0009\0\1\0)\1\1\0=\1\22\0K\0\1\0\31[%linter%] %s [%severity%]\24ale_echo_msg_format\25ale_linters_explicit\27ale_completion_enabled\b⚠\21ale_sign_warning\b✘\19ale_sign_error\20ale_fix_on_save\rmarkdown\1\2\0\0\rprettier\tjson\1\2\0\0\rprettier\thtml\1\2\0\0\rprettier\bcss\1\2\0\0\rprettier\15typescript\1\3\0\0\rprettier\veslint\1\3\0\0\rprettier\veslint\1\0\a\rmarkdown\0\bcss\0\tjson\0\15typescript\0\vpython\0\thtml\0\15javascript\0\1\2\0\0\rautopep8\15ale_fixers\15javascript\1\2\0\0\veslint\vpython\1\0\2\15javascript\0\vpython\0\1\2\0\0\14autoflake\16ale_linters\6g\bvim\0", "config", "ale")
 time([[Config for ale]], false)
 -- Config for: trouble.nvim
 time([[Config for trouble.nvim]], true)
 try_loadstring("\27LJ\2\nC\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\nicons\1\nsetup\ftrouble\frequire\0", "config", "trouble.nvim")
 time([[Config for trouble.nvim]], false)
+-- Config for: tokyonight
+time([[Config for tokyonight]], true)
+try_loadstring("\27LJ\2\n@\0\0\3\0\3\0\0056\0\0\0009\0\1\0'\2\2\0B\0\2\1K\0\1\0!colorscheme tokyonight-night\bcmd\bvim\0", "config", "tokyonight")
+time([[Config for tokyonight]], false)
 
 _G._packer.inside_compile = false
 if _G._packer.needs_bufread == true then
