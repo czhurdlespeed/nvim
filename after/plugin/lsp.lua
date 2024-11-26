@@ -60,10 +60,17 @@ lsp.configure('pylsp', {
 vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = {"*.py", "*.js", "*.jsx", "*.ts", "*.tsx", "*.cpp", "*.c", "*.rs"},
     callback = function()
+        -- Check if the file is a CSV
+        local filename = vim.api.nvim_buf_get_name(0)
+        if string.match(filename, "%.csv$") then
+            -- Just save the file without formatting if it's a CSV
+            vim.cmd('write')
+            return
+        end
+        
         -- Write the buffer first to save your changes
         vim.cmd('write')
         
-        local filename = vim.api.nvim_buf_get_name(0)
         local filetype = vim.bo.filetype
         
         -- Store cursor position
