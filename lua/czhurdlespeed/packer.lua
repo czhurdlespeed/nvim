@@ -25,9 +25,6 @@ return require('packer').startup(function(use)
       config = function()
           require("trouble").setup {
               icons = false,
-              -- your configuration comes here
-              -- or leave it empty to use the default settings
-              -- refer to the configuration section below
           }
       end
   })
@@ -44,19 +41,20 @@ return require('packer').startup(function(use)
   use("mbbill/undotree")
   use("tpope/vim-fugitive")
   use("nvim-treesitter/nvim-treesitter-context");
+
   -- Add ALE
   use {
     'dense-analysis/ale',
     config = function()
       -- ALE configuration
       vim.g.ale_linters = {
-        python = {'autoflake'},
+        python = {"ruff"},
         javascript = {'eslint'},
         -- Add more languages and linters as needed
       }
       
       vim.g.ale_fixers = {
-        python = {'autopep8'},
+        python = {"ruff", "ruff_format"},
         javascript = {'prettier', 'eslint'},
         typescript = {'prettier', 'eslint'},
         css = {'prettier'},
@@ -92,8 +90,6 @@ return require('packer').startup(function(use)
 	  requires = {
 		  -- LSP Support
 		  {'neovim/nvim-lspconfig'},
-		  {'williamboman/mason.nvim'},
-		  {'williamboman/mason-lspconfig.nvim'},
 
 		  -- Autocompletion
 		  {'hrsh7th/nvim-cmp'},
