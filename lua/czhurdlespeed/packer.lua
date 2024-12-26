@@ -50,6 +50,7 @@ return require('packer').startup(function(use)
       vim.g.ale_linters = {
         python = {"ruff"},
         javascript = {'eslint'},
+        markdown = {'marksman'},
         -- Add more languages and linters as needed
       }
       

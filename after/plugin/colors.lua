@@ -18,3 +18,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
         vim.api.nvim_set_hl(0, 'SpecialKey', { fg = "#00FF00", bold = true })
     end,
 })
+
+vim.opt.showbreak = '↪ '
+vim.api.nvim_set_hl(0, 'NonText', { fg = '#00FF00' })

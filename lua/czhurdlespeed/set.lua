@@ -9,7 +9,6 @@ vim.opt.smartindent = true
 vim.opt.wrap = true
 vim.opt.breakindent = true
 vim.opt.linebreak = true
-vim.opt.showbreak = '↪ '
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
