@@ -1,4 +1,3 @@
 require("czhurdlespeed.set")
 require("czhurdlespeed.remap")
-require("czhurdlespeed.lsp")
-require("czhurdlespeed.cmp-setup")
+require("czhurdlespeed.lazy_init")
