@@ -4,7 +4,7 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = function()
       local lint = require("lint")
-      -- JS/TS/web linting is owned by the ESLint LSP; nvim-lint only fills gaps
+      -- JS/TS/web linting is owned by the Biome LSP; nvim-lint only fills gaps
       -- where there is no language server doing diagnostics.
       lint.linters_by_ft = {
         sh = { "shellcheck" },

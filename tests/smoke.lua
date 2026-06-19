@@ -36,8 +36,8 @@ end
 
 -- 2. Expected LSP servers registered via vim.lsp.config
 local servers = {
-  "ruff", "vtsls", "gopls", "clangd", "tailwindcss", "cssls", "html",
-  "emmet_language_server", "mdx_analyzer", "eslint", "marksman", "lua_ls",
+  "ruff", "pyrefly", "vtsls", "gopls", "clangd", "tailwindcss", "cssls", "html",
+  "emmet_language_server", "mdx_analyzer", "biome", "marksman", "lua_ls",
 }
 for _, s in ipairs(servers) do
   local ok, cfg = pcall(function() return vim.lsp.config[s] end)

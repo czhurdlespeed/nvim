@@ -27,22 +27,23 @@ There is no `after/plugin/` directory — per-plugin config lives in its lazy sp
 
 Uses the native Neovim 0.11+ API: a `servers` table is applied via `vim.lsp.config(name, cfg)`, then **explicitly enabled** with a `vim.lsp.enable()` loop. mason-lspconfig's `automatic_enable` is **deliberately `false`** — leaving it on auto-enables every mapped mason package that happens to be installed (legacy `ts_ls`/`pylsp`/`rust_analyzer`, even stylua's `--lsp`), causing duplicate clients. Capabilities come from `blink.cmp`.
 
-- Servers: `ruff`, `vtsls`, `gopls`, `clangd`, `tailwindcss`, `cssls`, `html`, `emmet_language_server`, `eslint`, `marksman`, `lua_ls`.
+- Servers: `ruff`, `pyrefly`, `vtsls`, `gopls`, `clangd`, `tailwindcss`, `cssls`, `html`, `emmet_language_server`, `biome`, `marksman`, `lua_ls`.
 - **rust is NOT here** — `rustaceanvim` (in `lazy/neotest.lua`) owns rust-analyzer + rust DAP/tests. Do not add `rust_analyzer` to `servers` (it would double-start).
-- `ty` (Python types) is enabled conditionally, only if the `ty` binary is on PATH.
+- **Python types:** `pyrefly` (Meta's Rust type checker) — replaced the old `ty`. ruff still owns Python lint/format/import-organization.
+- **JS/TS/JSON/CSS lint:** `biome` — **replaced ESLint** (which is fully removed). The bundled lspconfig `biome` config only attaches when a `biome.json` exists; we override `root_dir` + `workspace_required = false` so Biome attaches everywhere (using its built-in defaults when no config is present). A project `biome.json` is still discovered and honored by the binary.
 - `mdx_analyzer` is intentionally disabled — it wraps tsserver and crashes without a project TypeScript SDK. MDX is covered by treesitter + prettier + render-markdown + nvim-ts-autotag.
-- On `LspAttach`: ruff's hover is disabled (so `ty` wins), eslint runs `EslintFixAll` on save, and `gd`/`gr`/`gi`/`<leader>ca`/`<leader>rn`/`<leader>e` are mapped (0.11 already provides `grn`/`gra`/`grr`/`gri`/`K`).
+- On `LspAttach`: ruff's hover is disabled (so `pyrefly` wins), and `gd`/`gr`/`gi`/`<leader>ca`/`<leader>rn`/`<leader>e` are mapped (0.11 already provides `grn`/`gra`/`grr`/`gri`/`K`).
 
 ### Completion, formatting, linting
 
 - **Completion:** `blink.cmp` pinned to `version = "1.*"` (v2 is breaking/in-dev), with LuaSnip + friendly-snippets. (`lazy/completion.lua`)
-- **Formatting:** `conform.nvim` (`lazy/formatting.lua`), format-on-save via **prettierd** (js/ts/jsx/tsx/css/scss/html/json/yaml/md/mdx/graphql), ruff (python), stylua, gofumpt, rustfmt, clang-format. **csv is explicitly never formatted** (preserved from the original config).
-- **Linting:** `nvim-lint` (`lazy/linting.lua`) covers only gaps (shellcheck, markdownlint); JS/TS/web linting is owned by the **ESLint LSP**. ALE is fully removed.
+- **Formatting:** `conform.nvim` (`lazy/formatting.lua`), format-on-save via **biome** (js/ts/jsx/tsx/css/json/jsonc), **prettierd** (scss/less/html/yaml/md/mdx/graphql), **ruff** (python — order is `ruff_fix` → `ruff_organize_imports` → `ruff_format`, i.e. fixes/imports before format per Astral guidance), stylua, gofumpt, rustfmt, clang-format. **csv is explicitly never formatted** (preserved from the original config).
+- **Linting:** `nvim-lint` (`lazy/linting.lua`) covers only gaps (shellcheck, markdownlint); JS/TS/web linting is owned by the **Biome LSP**. ALE is fully removed.
 
 ### Other subsystems
 
 - **Git:** `vim-fugitive` (power ops + `<leader>g*` maps in fugitive buffers), `gitsigns.nvim` (`]c`/`[c`, `<leader>h*` hunks, `<leader>gb` blame toggle), `lazygit.nvim` (`<leader>gg`).
-- **Web dev:** tailwindcss/cssls/html/eslint/emmet LSPs, `nvim-ts-autotag` (JSX/TSX/HTML tag auto-close/rename), `nvim-colorizer.lua` (`catgoose/` fork — color swatches). Tailwind class sorting via per-project `prettier-plugin-tailwindcss` (prettierd auto-detects it); `rustywind` is the global fallback.
+- **Web dev:** tailwindcss/cssls/html/biome/emmet LSPs, `nvim-ts-autotag` (JSX/TSX/HTML tag auto-close/rename), `nvim-colorizer.lua` (`catgoose/` fork — color swatches). Tailwind class sorting: in biome-formatted files it requires Biome's nursery `useSortedClasses` rule opted into per-project in `biome.json` (can't be forced globally); in prettierd-handled filetypes it comes from per-project `prettier-plugin-tailwindcss`; `rustywind` is the global fallback.
 - **Navigation/UI:** `fzf-lua` (finder; `<leader>pf`, `<C-p>`, `<leader>ps`, etc. — also the `vim.ui.select` handler), `harpoon` v2 (`<leader>a` add, `<C-e>` menu, `<leader>1..4` select), `which-key`, `lualine`, `trouble.nvim` v3 (`<leader>x*`).
 - **Debug/test:** `nvim-dap` + dap-ui (`<leader>d*`) with debugpy (Python) and delve (Go); `neotest` (`<leader>t*`) with python/golang adapters + rustaceanvim for rust. **codelldb** (C/C++/rust step-debugging) is gated on existence — if its mason download failed, run `:MasonInstall codelldb` and `dap.lua` picks it up automatically.
 - **tmux:** `vim-tmux-navigator` (`<C-h/j/k/l>` across nvim/tmux). System config lives outside this repo: `~/.config/tmux/tmux.conf` and `~/.local/bin/tmux-sessionizer` (revives the `<C-f>` map). The terminal must use a **Nerd Font** for icons.
