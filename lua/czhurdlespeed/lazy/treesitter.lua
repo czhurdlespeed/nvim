@@ -21,6 +21,48 @@ local ensure_installed = {
   "bash", "php", "matlab",
 }
 
+-- Volta's shim dir sits first on PATH, and `~/.volta/bin/tree-sitter` only
+-- resolves when the *current project* depends on tree-sitter-cli. Anywhere else
+-- it hard-errors ("Volta error: Could not locate executable `tree-sitter` in
+-- your project") instead of falling through to the standalone binary, which
+-- fails every parser that needs `tree-sitter generate` (matlab, php, ...).
+-- Prepend an nvim-owned bin dir containing a symlink to the first non-Volta
+-- tree-sitter on PATH — shadows only that one shim, leaving volta's node/npm
+-- and every other shim untouched.
+local function prefer_standalone_tree_sitter_cli()
+  local bin = vim.fn.stdpath("data") .. "/bin"
+  local link = bin .. "/tree-sitter"
+  if vim.uv.fs_stat(link) == nil then
+    -- broken leftover symlink: fs_stat follows, fs_lstat doesn't
+    if vim.uv.fs_lstat(link) ~= nil then
+      vim.uv.fs_unlink(link)
+    end
+    local target
+    for dir in vim.gsplit(vim.env.PATH or "", ":", { trimempty = true }) do
+      if not dir:find("/.volta/", 1, true) then
+        local candidate = dir .. "/tree-sitter"
+        if vim.fn.executable(candidate) == 1 then
+          target = candidate
+          break
+        end
+      end
+    end
+    -- no real CLI installed; `brew install tree-sitter-cli` and restart
+    if not target then
+      return
+    end
+    vim.fn.mkdir(bin, "p")
+    vim.uv.fs_symlink(target, link)
+  end
+  -- idempotent: re-sourcing this file must not stack duplicate entries
+  if not vim.startswith(vim.env.PATH or "", bin .. ":") then
+    vim.env.PATH = bin .. ":" .. vim.env.PATH
+  end
+end
+
+-- run at spec-import time, i.e. before lazy installs/builds anything
+prefer_standalone_tree_sitter_cli()
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -52,6 +94,13 @@ return {
       -- alias for the json grammar). Map the jsonc filetype to the json parser
       -- so JSONC files (tsconfig.json, .vscode/*, etc.) still highlight.
       vim.treesitter.language.register("json", "jsonc")
+
+      -- `*.mdx` gets its own `mdx` filetype (see set.lua) but there is no `mdx`
+      -- parser — `vim.treesitter.start` would look one up, fail, and the pcall
+      -- below swallows it, leaving MDX files completely uncolored. Register the
+      -- markdown parser for the mdx filetype so treesitter (and render-markdown)
+      -- highlight it as markdown.
+      vim.treesitter.language.register("markdown", "mdx")
 
       -- Enable native treesitter highlighting for any buffer whose language
       -- has an installed parser. pcall swallows the error for filetypes
