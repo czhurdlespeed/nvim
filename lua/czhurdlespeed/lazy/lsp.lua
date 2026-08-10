@@ -15,9 +15,36 @@ return {
 			"mason-org/mason-lspconfig.nvim",
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
 			"saghen/blink.cmp",
+			"yioneko/nvim-vtsls",
 		},
 		config = function()
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+			-- nvim-vtsls supplies the :VtsExec/:VtsRename commands and TS-specific
+			-- helpers (select_ts_version, goto_source_definition, ...). Guarded so a
+			-- load failure degrades to a plain vtsls setup instead of breaking the
+			-- other servers configured below.
+			local ok_vtsls, vtsls = pcall(require, "vtsls")
+
+			-- Volar-based servers (astro-language-server, mdx-analyzer) wrap tsserver and
+			-- need a *classic* TypeScript SDK (tsserverlibrary.js/typescript.js). Prefer the
+			-- project's own TS so diagnostics match its version; else fall back to the pinned
+			-- TS5 at ~/.local/share/nvim/ts-sdk (survives mason updates; recreate with
+			-- `npm i typescript@^5` there if wiped). Without a tsdk they error
+			-- "The typescript.tsdk init option is required" and exit 1.
+			local function prefer_project_tsdk(_, config)
+				config.init_options = config.init_options or {}
+				config.init_options.typescript = config.init_options.typescript or {}
+				local ts = config.init_options.typescript
+				if not ts.tsdk or ts.tsdk == "" then
+					local ok, util = pcall(require, "lspconfig.util")
+					local tsdk = ok and util.get_typescript_server_path(config.root_dir) or ""
+					if tsdk == nil or tsdk == "" then
+						tsdk = vim.fs.joinpath(vim.fn.stdpath("data"), "ts-sdk", "node_modules", "typescript", "lib")
+					end
+					ts.tsdk = tsdk
+				end
+			end
 
 			-- Per-server settings. mason-lspconfig (automatic_enable) calls vim.lsp.enable()
 			-- for installed servers, so we only need vim.lsp.config() to attach settings.
@@ -29,7 +56,21 @@ return {
 				-- pyrefly (Meta's Rust Python type checker) owns Python types/hover.
 				-- Replaces the old `ty` setup. ruff handles lint+format/imports.
 				pyrefly = {},
-				vtsls = {},
+				-- vim.lsp.config merges this over nvim-lspconfig's bundled lsp/vtsls.lua
+				-- (which supplies cmd/filetypes/root_dir), so only settings go here.
+				-- autoUseWorkspaceTsdk: prefer the project's node_modules/typescript so
+				-- diagnostics match the version it builds with, else the bundled TS.
+				-- (:VtsExec/:VtsRename are registered by nvim-vtsls on LspAttach, not here.)
+				vtsls = {
+					settings = {
+						typescript = { updateImportsOnFileMove = "always" },
+						javascript = { updateImportsOnFileMove = "always" },
+						vtsls = {
+							autoUseWorkspaceTsdk = true,
+							enableMoveToFileCodeAction = true,
+						},
+					},
+				},
 				gopls = {
 					settings = {
 						gopls = {
@@ -46,6 +87,11 @@ return {
 				tailwindcss = {},
 				cssls = {},
 				html = {},
+				-- Volar-based astro-ls needs classic TS (tsserverlibrary.js/typescript.js);
+				-- its own dep + the volta global are the TS7 native port, which lacks them.
+				astro = {
+					before_init = prefer_project_tsdk,
+				},
 				emmet_language_server = {
 					filetypes = {
 						"html",
@@ -60,10 +106,14 @@ return {
 						"vue",
 					},
 				},
-				-- NOTE: mdx_analyzer is intentionally NOT enabled here. It wraps tsserver
-				-- and crashes (exit 1) unless the project provides a TypeScript SDK.
-				-- MDX is covered by treesitter + prettier (conform) + render-markdown +
-				-- nvim-ts-autotag. Re-enable per-project if you need JSX-in-MDX intellisense.
+				-- mdx-analyzer wraps tsserver for JSX-in-MDX intellisense (hover,
+				-- go-to-definition, references). prefer_project_tsdk hands it the project's
+				-- TypeScript (or the pinned TS5 fallback), so it no longer crashes on
+				-- standalone .mdx files — the reason it used to be disabled. Treesitter +
+				-- prettier + render-markdown + nvim-ts-autotag still cover the rest.
+				mdx_analyzer = {
+					before_init = prefer_project_tsdk,
+				},
 				-- Biome owns JS/TS/JSON/CSS linting (replaces ESLint) + formatting (via conform).
 				-- The bundled lspconfig config only attaches when a biome.json exists
 				-- (workspace_required + a nil-returning root_dir); override both so Biome
@@ -137,11 +187,39 @@ return {
 					-- Extra keymaps (Neovim 0.11 already provides grn/gra/grr/gri/K/gO).
 					local fzf = require("fzf-lua")
 					local opts = { buffer = args.buf, silent = true }
-					vim.keymap.set("n", "gd", fzf.lsp_definitions, opts)
-					vim.keymap.set("n", "gr", fzf.lsp_references, opts)
-					vim.keymap.set("n", "gi", fzf.lsp_implementations, opts)
+
+					-- Degrade LSP navigation to a soft notify (not a hard error) on
+					-- buffers whose attached server(s) don't provide the method — e.g.
+					-- tailwindcss attaches to mdx/markdown for class completion but has
+					-- no definition/reference/implementation provider, so a bare `gd`
+					-- otherwise throws "server does not support textDocument/definition".
+					local function if_supported(method, fn, label)
+						return function()
+							if next(vim.lsp.get_clients({ bufnr = args.buf, method = method })) then
+								fn()
+							else
+								vim.notify("No LSP server provides " .. label .. " here", vim.log.levels.INFO)
+							end
+						end
+					end
+
+					vim.keymap.set("n", "gd", if_supported("textDocument/definition", fzf.lsp_definitions, "go-to-definition"), opts)
+					vim.keymap.set("n", "gr", if_supported("textDocument/references", fzf.lsp_references, "references"), opts)
+					vim.keymap.set("n", "gi", if_supported("textDocument/implementation", fzf.lsp_implementations, "implementations"), opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+
+					-- vtsls-only extras (buffer-local; <leader>V prefix is otherwise unused).
+					if ok_vtsls and client and client.name == "vtsls" then
+						local function vmap(lhs, cmd, desc)
+							vim.keymap.set("n", lhs, function()
+								vtsls.commands[cmd](0)
+							end, vim.tbl_extend("force", opts, { desc = desc }))
+						end
+						vmap("<leader>Vv", "select_ts_version", "vtsls: select TS version")
+						vmap("<leader>Vs", "goto_source_definition", "vtsls: goto source definition")
+						vmap("<leader>Vo", "organize_imports", "vtsls: organize imports")
+					end
 				end,
 			})
 		end,
