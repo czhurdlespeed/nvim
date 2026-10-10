@@ -6,11 +6,12 @@ return {
       {
         "<leader>zz",
         function()
-          require("zen-mode").setup({ window = { width = 90, options = {} } })
+          -- window.options apply only to the zen float, so nothing leaks back
+          -- onto the original window when zen closes.
+          require("zen-mode").setup({
+            window = { width = 90, options = { wrap = false, number = true, relativenumber = true } },
+          })
           require("zen-mode").toggle()
-          vim.wo.wrap = false
-          vim.wo.number = true
-          vim.wo.rnu = true
           ColorMyPencils()
         end,
         desc = "Zen mode (numbers)",
@@ -18,12 +19,13 @@ return {
       {
         "<leader>zZ",
         function()
-          require("zen-mode").setup({ window = { width = 80, options = {} } })
+          require("zen-mode").setup({
+            window = {
+              width = 80,
+              options = { wrap = false, number = false, relativenumber = false, colorcolumn = "" },
+            },
+          })
           require("zen-mode").toggle()
-          vim.wo.wrap = false
-          vim.wo.number = false
-          vim.wo.rnu = false
-          vim.opt.colorcolumn = "0"
           ColorMyPencils()
         end,
         desc = "Zen mode (minimal)",

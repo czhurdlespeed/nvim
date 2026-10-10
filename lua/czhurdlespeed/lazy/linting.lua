@@ -15,7 +15,13 @@ return {
       local grp = vim.api.nvim_create_augroup("czhurdlespeed_nvim_lint", { clear = true })
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
         group = grp,
-        callback = function()
+        callback = function(args)
+          -- shellcheck lints the file on disk (not stdin) once it exists, so on
+          -- InsertLeave with unsaved edits its diagnostics land on stale lines.
+          local ft = vim.bo[args.buf].filetype
+          if args.event == "InsertLeave" and vim.bo[args.buf].modified and (ft == "sh" or ft == "bash") then
+            return
+          end
           require("lint").try_lint()
         end,
       })

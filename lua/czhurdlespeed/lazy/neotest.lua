@@ -27,6 +27,7 @@ return {
         adapters = {
           require("neotest-python"),
           require("neotest-golang"),
+          require("rustaceanvim.neotest"),
         },
       })
     end,

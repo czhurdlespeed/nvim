@@ -28,19 +28,41 @@ return {
 
 			-- Volar-based servers (astro-language-server, mdx-analyzer) wrap tsserver and
 			-- need a *classic* TypeScript SDK (tsserverlibrary.js/typescript.js). Prefer the
-			-- project's own TS so diagnostics match its version; else fall back to the pinned
-			-- TS5 at ~/.local/share/nvim/ts-sdk (survives mason updates; recreate with
-			-- `npm i typescript@^5` there if wiped). Without a tsdk they error
-			-- "The typescript.tsdk init option is required" and exit 1.
+			-- project's own TS so diagnostics match its version -- but only if it's classic:
+			-- TS7 (the native Go port, npm `latest` since 7.0) ships neither file, so a TS7
+			-- project lib is skipped (searching upward, for hoisted monorepo installs). Else
+			-- fall back to the pinned TS5 at ~/.local/share/nvim/ts-sdk (survives mason
+			-- updates; recreate with `npm i typescript@^5` there if wiped). Without a tsdk
+			-- they error "The typescript.tsdk init option is required" and exit 1.
+			local function classic_tsdk(root)
+				local dirs = vim.fs.find("node_modules", {
+					path = root or vim.fn.getcwd(),
+					upward = true,
+					type = "directory",
+					limit = math.huge,
+				})
+				for _, nm in ipairs(dirs) do
+					local lib = nm .. "/typescript/lib"
+					if vim.uv.fs_stat(lib .. "/typescript.js") or vim.uv.fs_stat(lib .. "/tsserverlibrary.js") then
+						return lib
+					end
+				end
+			end
+
 			local function prefer_project_tsdk(_, config)
 				config.init_options = config.init_options or {}
 				config.init_options.typescript = config.init_options.typescript or {}
 				local ts = config.init_options.typescript
 				if not ts.tsdk or ts.tsdk == "" then
-					local ok, util = pcall(require, "lspconfig.util")
-					local tsdk = ok and util.get_typescript_server_path(config.root_dir) or ""
-					if tsdk == nil or tsdk == "" then
+					local tsdk = classic_tsdk(config.root_dir)
+					if not tsdk then
 						tsdk = vim.fs.joinpath(vim.fn.stdpath("data"), "ts-sdk", "node_modules", "typescript", "lib")
+						if not vim.uv.fs_stat(tsdk .. "/typescript.js") then
+							vim.notify(
+								"TS5 fallback missing: run `npm i typescript@^5` in " .. vim.fn.stdpath("data") .. "/ts-sdk",
+								vim.log.levels.WARN
+							)
+						end
 					end
 					ts.tsdk = tsdk
 				end
@@ -204,8 +226,8 @@ return {
 					end
 
 					vim.keymap.set("n", "gd", if_supported("textDocument/definition", fzf.lsp_definitions, "go-to-definition"), opts)
-					vim.keymap.set("n", "gr", if_supported("textDocument/references", fzf.lsp_references, "references"), opts)
-					vim.keymap.set("n", "gi", if_supported("textDocument/implementation", fzf.lsp_implementations, "implementations"), opts)
+					vim.keymap.set("n", "grr", if_supported("textDocument/references", fzf.lsp_references, "references"), opts)
+					vim.keymap.set("n", "gri", if_supported("textDocument/implementation", fzf.lsp_implementations, "implementations"), opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 

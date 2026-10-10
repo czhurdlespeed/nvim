@@ -19,6 +19,7 @@ local ensure_installed = {
   "javascript", "typescript", "tsx", "html", "css", "scss",
   "json", "yaml", "graphql", "markdown", "markdown_inline",
   "bash", "php", "matlab",
+  "astro", "toml", "gomod", "gosum", "diff", "gitcommit", "regex",
 }
 
 -- Volta's shim dir sits first on PATH, and `~/.volta/bin/tree-sitter` only
@@ -130,6 +131,14 @@ return {
     branch = "main",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = { "BufReadPost", "BufNewFile" },
+    init = function()
+      -- Runtime ftplugins map buffer-local ]] [[ (and ]m [m for python), which beat
+      -- the global textobject moves below. Opt out per-filetype, not via the global
+      -- no_plugin_maps, so markdown's ]] [[ section jumps survive.
+      vim.g.no_python_maps = true
+      vim.g.no_go_maps = true
+      vim.g.no_rust_maps = true
+    end,
     config = function()
       require("nvim-treesitter-textobjects").setup({
         select = { lookahead = true },

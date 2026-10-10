@@ -26,6 +26,22 @@ return {
       { "<leader>fS", function() require("fzf-lua").lsp_live_workspace_symbols() end, desc = "Workspace symbols" },
     },
     opts = {},
+    init = function()
+      -- fzf-lua is lazy; load it on the first vim.ui.select so selects in
+      -- LSP-less buffers (e.g. <leader>rr) get fzf too. config below replaces
+      -- vim.ui.select via register_ui_select(); the guard avoids recursion if
+      -- that ever fails.
+      local builtin = vim.ui.select
+      local shim
+      shim = function(...)
+        require("lazy").load({ plugins = { "fzf-lua" } })
+        if vim.ui.select == shim then
+          vim.ui.select = builtin
+        end
+        return vim.ui.select(...)
+      end
+      vim.ui.select = shim
+    end,
     config = function(_, opts)
       local fzf = require("fzf-lua")
       fzf.setup(opts)

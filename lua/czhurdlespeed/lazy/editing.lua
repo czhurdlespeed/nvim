@@ -17,9 +17,10 @@ return {
       "html", "xml", "markdown", "mdx", "php",
       "javascript", "javascriptreact",
       "typescript", "typescriptreact",
-      "svelte", "vue",
+      "svelte", "vue", "astro",
     },
-    opts = {},
+    -- mdx is its own filetype (markdown parser alias); autotag needs it mapped.
+    opts = { aliases = { mdx = "html" } },
   },
   {
     -- Inline color swatches for CSS hex/rgb/hsl and Tailwind colors.

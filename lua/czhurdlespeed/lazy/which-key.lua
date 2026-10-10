@@ -13,7 +13,7 @@ return {
         { "<leader>t", group = "test/tab" },
         { "<leader>x", group = "trouble/diagnostics" },
         { "<leader>z", group = "zen" },
-        { "<leader>d", group = "debug" },
+        { "<leader>D", group = "debug" },
       },
     },
   },

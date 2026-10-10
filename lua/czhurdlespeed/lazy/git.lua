@@ -1,21 +1,19 @@
 return {
   {
     "tpope/vim-fugitive",
-    cmd = { "Git", "G" },
+    -- Not lazy: only :Git/:G would get lazy stubs, leaving :Gdiffsplit, :Gread,
+    -- :GBrowse, ... as E492 until :Git ran. fugitive is autoload-based, so cheap.
+    lazy = false,
     keys = {
       { "<leader>gs", vim.cmd.Git, desc = "Git status (fugitive)" },
     },
     config = function()
       local grp = vim.api.nvim_create_augroup("czhurdlespeed_fugitive", {})
-      vim.api.nvim_create_autocmd("BufWinEnter", {
+      vim.api.nvim_create_autocmd("FileType", {
         group = grp,
-        pattern = "*",
-        callback = function()
-          if vim.bo.ft ~= "fugitive" then
-            return
-          end
-          local bufnr = vim.api.nvim_get_current_buf()
-          local opts = { buffer = bufnr, remap = false }
+        pattern = "fugitive",
+        callback = function(ev)
+          local opts = { buffer = ev.buf, remap = false }
           vim.keymap.set("n", "<leader>gp", function() vim.cmd.Git("push") end, opts)
           vim.keymap.set("n", "<leader>gP", function() vim.cmd.Git({ "pull", "--rebase" }) end, opts)
           vim.keymap.set("n", "<leader>gt", ":Git push -u origin ", opts)
@@ -38,8 +36,13 @@ return {
         local function map(mode, l, r, desc)
           vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
         end
-        map("n", "]c", function() gs.nav_hunk("next") end, "Next git hunk")
-        map("n", "[c", function() gs.nav_hunk("prev") end, "Prev git hunk")
+        -- In diff windows (:Gdiffsplit) keep Vim's native ]c/[c change jumps.
+        map("n", "]c", function()
+          if vim.wo.diff then vim.cmd.normal({ "]c", bang = true }) else gs.nav_hunk("next") end
+        end, "Next git hunk")
+        map("n", "[c", function()
+          if vim.wo.diff then vim.cmd.normal({ "[c", bang = true }) else gs.nav_hunk("prev") end
+        end, "Prev git hunk")
         map("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
         map("v", "<leader>hs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Stage hunk")
         map("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
