@@ -7,7 +7,7 @@
 -- plugin can be dropped entirely while everything keeps its icons.
 return {
   {
-    "echasnovski/mini.icons",
+    "nvim-mini/mini.icons",
     version = false,
     lazy = true,
     opts = {},

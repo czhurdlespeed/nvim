@@ -3,6 +3,7 @@ return {
     -- Modern Rust setup: bundles rust-analyzer config, DAP, and test/runnables.
     -- Replaces a manual rust_analyzer LSP block (do NOT also configure it in lsp.lua).
     "mrcjkb/rustaceanvim",
+    version = "^9",
     lazy = false,
   },
   {
@@ -26,7 +27,10 @@ return {
       require("neotest").setup({
         adapters = {
           require("neotest-python"),
-          require("neotest-golang"),
+          -- gotestsum avoids `go test -json` stdout corruption; fall back if missing.
+          require("neotest-golang")({
+            runner = vim.fn.executable("gotestsum") == 1 and "gotestsum" or "go",
+          }),
           require("rustaceanvim.neotest"),
         },
       })

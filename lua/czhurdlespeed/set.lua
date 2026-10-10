@@ -55,3 +55,12 @@ vim.api.nvim_create_autocmd("FileChangedShellPost", {
     vim.notify("File changed on disk — buffer reloaded", vim.log.levels.WARN)
   end,
 })
+
+-- Diagnostics. 0.11+ turned virtual_text off by default (signs + underline
+-- only); show it on the cursor line only to keep noise down. Global (not in
+-- LspAttach) because nvim-lint diagnostics need it too.
+vim.diagnostic.config({
+  severity_sort = true,
+  virtual_text = { current_line = true },
+  float = { source = "if_many", border = "rounded" },
+})

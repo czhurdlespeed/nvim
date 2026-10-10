@@ -18,7 +18,8 @@ return {
 			"yioneko/nvim-vtsls",
 		},
 		config = function()
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
+			-- Capabilities: blink.cmp's plugin/ file sets vim.lsp.config("*", { capabilities })
+			-- on 0.11+, so no per-server copy here (blink is a dependency => loads first).
 
 			-- nvim-vtsls supplies the :VtsExec/:VtsRename commands and TS-specific
 			-- helpers (select_ts_version, goto_source_definition, ...). Guarded so a
@@ -96,8 +97,7 @@ return {
 				gopls = {
 					settings = {
 						gopls = {
-							analyses = { unusedparams = true },
-							staticcheck = true,
+							-- staticcheck unset = gopls's curated analyzer subset (v0.19+).
 							gofumpt = true,
 						},
 					},
@@ -114,20 +114,7 @@ return {
 				astro = {
 					before_init = prefer_project_tsdk,
 				},
-				emmet_language_server = {
-					filetypes = {
-						"html",
-						"css",
-						"scss",
-						"less",
-						"javascript",
-						"javascriptreact",
-						"typescript",
-						"typescriptreact",
-						"svelte",
-						"vue",
-					},
-				},
+				emmet_language_server = {},
 				-- mdx-analyzer wraps tsserver for JSX-in-MDX intellisense (hover,
 				-- go-to-definition, references). prefer_project_tsdk hands it the project's
 				-- TypeScript (or the pinned TS5 fallback), so it no longer crashes on
@@ -144,11 +131,16 @@ return {
 				biome = {
 					workspace_required = false,
 					root_dir = function(bufnr, on_dir)
-						-- Prioritized tiers (Nvim 0.11.3+): a project biome.json/jsonc always
-						-- wins as the root when present, else the package/git root, else cwd.
+						-- Prioritized tiers (Nvim 0.11.3+), upstream's order: lockfile root first
+						-- so a monorepo gets one server (and its node_modules/.bin/biome) rather
+						-- than one per package; Biome 2 resolves nested biome.json from there.
+						-- Then biome.json, then git root, else cwd (attach everywhere).
 						on_dir(
-							vim.fs.root(bufnr, { { "biome.json", "biome.jsonc" }, { "package.json" }, { ".git" } })
-								or vim.fn.getcwd()
+							vim.fs.root(bufnr, {
+								{ "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock", "deno.lock" },
+								{ "biome.json", "biome.jsonc" },
+								{ ".git" },
+							}) or vim.fn.getcwd()
 						)
 					end,
 				},
@@ -156,7 +148,9 @@ return {
 				lua_ls = {
 					settings = {
 						Lua = {
-							diagnostics = { globals = { "vim", "ColorMyPencils" } },
+							-- `vim` types come from lazydev.nvim (lazy/lazydev.lua).
+							runtime = { version = "LuaJIT" },
+							diagnostics = { globals = { "ColorMyPencils" } },
 							workspace = { checkThirdParty = false },
 						},
 					},
@@ -164,7 +158,6 @@ return {
 			}
 
 			for name, cfg in pairs(servers) do
-				cfg.capabilities = capabilities
 				vim.lsp.config(name, cfg)
 			end
 
@@ -188,6 +181,7 @@ return {
 					"stylua",
 					"debugpy",
 					"delve",
+					"gotestsum",
 					"codelldb",
 					"shellcheck",
 					"shfmt",

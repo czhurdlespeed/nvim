@@ -11,7 +11,7 @@ local grep_rg_opts = table.concat({
 return {
   {
     "ibhagwan/fzf-lua",
-    dependencies = { "echasnovski/mini.icons" },
+    dependencies = { "nvim-mini/mini.icons" },
     cmd = "FzfLua",
     keys = {
       { "<leader>pf", function() require("fzf-lua").files() end, desc = "Find files" },

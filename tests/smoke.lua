@@ -34,14 +34,19 @@ for _, m in ipairs(modules) do
   check("require " .. m, ok, err)
 end
 
--- 2. Expected LSP servers registered via vim.lsp.config
+-- 2. Expected LSP servers enabled via the explicit vim.lsp.enable() loop
+-- (vim.lsp.config[name] is non-nil for any server lspconfig ships, so it
+-- proves nothing; is_enabled checks our loop actually ran).
 local servers = {
   "ruff", "pyrefly", "vtsls", "gopls", "clangd", "tailwindcss", "cssls", "html",
-  "emmet_language_server", "mdx_analyzer", "biome", "marksman", "lua_ls",
+  "emmet_language_server", "astro", "mdx_analyzer", "biome", "marksman", "lua_ls",
 }
 for _, s in ipairs(servers) do
-  local ok, cfg = pcall(function() return vim.lsp.config[s] end)
-  check("vim.lsp.config[" .. s .. "]", ok and cfg ~= nil)
+  check("lsp enabled: " .. s, vim.lsp.is_enabled(s))
+end
+-- rustaceanvim owns rust-analyzer; ts_ls would duplicate vtsls.
+for _, s in ipairs({ "rust_analyzer", "ts_ls" }) do
+  check("lsp NOT enabled: " .. s, not vim.lsp.is_enabled(s))
 end
 
 -- 3. conform resolves a formatter for each expected filetype, and NOT for csv

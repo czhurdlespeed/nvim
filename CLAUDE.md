@@ -9,7 +9,7 @@ This is a personal Neovim configuration (Lua) for **Neovim 0.12+**, namespaced `
 - `:so` (or `<leader><leader>`) re-sources the current file; restart `nvim` for changes to load order, `set.lua`, or plugin specs.
 - **Plugins:** declared as one-file-per-concern specs under `lua/czhurdlespeed/lazy/`. Edit a spec, then `:Lazy sync` (install/update/clean to match). `:Lazy` opens the UI; `:Lazy check`/`:Lazy restore` use the committed `lazy-lock.json` (commit it after syncing).
 - **External tools (LSP servers, formatters, linters, debug adapters):** managed by **mason** — `:Mason` UI. They're declared in `lua/czhurdlespeed/lazy/lsp.lua` (`mason-lspconfig` `ensure_installed` for servers, `mason-tool-installer` for tools) and auto-install on first launch.
-- **Smoke test:** `nvim --headless -c "luafile tests/smoke.lua"` asserts every key module loads, all configured LSP servers are registered, and conform resolves formatters (csv excluded). Exits non-zero on failure.
+- **Smoke test:** `nvim --headless -c "luafile tests/smoke.lua"` asserts every key module loads, all configured LSP servers are enabled (and `rust_analyzer`/`ts_ls` are not), and conform resolves formatters (csv excluded). Exits non-zero on failure.
 - **Health:** `:checkhealth`.
 
 ## Load order & architecture
