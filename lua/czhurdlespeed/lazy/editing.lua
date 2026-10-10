@@ -34,10 +34,14 @@ return {
         "typescript", "typescriptreact",
         "vue", "svelte",
       },
-      user_default_options = {
-        tailwind = true,
-        css = true,
-        names = false,
+      -- New-style options (legacy user_default_options is frozen). Tailwind
+      -- lsp = true also picks up a project's custom tailwind.config colors.
+      options = {
+        parsers = {
+          css = true,
+          names = { enable = false },
+          tailwind = { enable = true, lsp = true },
+        },
       },
     },
   },

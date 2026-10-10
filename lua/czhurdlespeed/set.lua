@@ -31,7 +31,6 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 vim.g.node_host_prog = vim.fn.expand("~/.volta/tools/image/packages/neovim/lib/node_modules/neovim/bin/cli.js")
-vim.g.perl_host_prog = vim.fn.exepath("perl")
 vim.g.loaded_perl_provider = 0
 
 -- Treat *.mdx as its own filetype (markdown + JSX) for mdx_analyzer / render-markdown.

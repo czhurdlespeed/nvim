@@ -69,8 +69,8 @@ return {
 				end
 			end
 
-			-- Per-server settings. mason-lspconfig (automatic_enable) calls vim.lsp.enable()
-			-- for installed servers, so we only need vim.lsp.config() to attach settings.
+			-- Per-server settings, applied via vim.lsp.config() and enabled by the explicit
+			-- vim.lsp.enable() loop below (mason-lspconfig automatic_enable = false).
 			-- NOTE: rust is handled by rustaceanvim (see neotest.lua) — do NOT add rust_analyzer here.
 			local servers = {
 				ruff = {
@@ -86,8 +86,25 @@ return {
 				-- (:VtsExec/:VtsRename are registered by nvim-vtsls on LspAttach, not here.)
 				vtsls = {
 					settings = {
-						typescript = { updateImportsOnFileMove = "always" },
-						javascript = { updateImportsOnFileMove = "always" },
+						-- inlayHints only show once toggled on (<leader>ih).
+						typescript = {
+							updateImportsOnFileMove = "always",
+							inlayHints = {
+								parameterNames = { enabled = "literals" },
+								parameterTypes = { enabled = true },
+								functionLikeReturnTypes = { enabled = true },
+								enumMemberValues = { enabled = true },
+							},
+						},
+						javascript = {
+							updateImportsOnFileMove = "always",
+							inlayHints = {
+								parameterNames = { enabled = "literals" },
+								parameterTypes = { enabled = true },
+								functionLikeReturnTypes = { enabled = true },
+								enumMemberValues = { enabled = true },
+							},
+						},
 						vtsls = {
 							autoUseWorkspaceTsdk = true,
 							enableMoveToFileCodeAction = true,
@@ -99,6 +116,14 @@ return {
 						gopls = {
 							-- staticcheck unset = gopls's curated analyzer subset (v0.19+).
 							gofumpt = true,
+							hints = {
+								assignVariableTypes = true,
+								compositeLiteralFields = true,
+								constantValues = true,
+								functionTypeParameters = true,
+								parameterNames = true,
+								rangeVariableTypes = true,
+							},
 						},
 					},
 				},
@@ -224,6 +249,10 @@ return {
 					vim.keymap.set("n", "gri", if_supported("textDocument/implementation", fzf.lsp_implementations, "implementations"), opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "<leader>ih", function()
+						local filter = { bufnr = args.buf }
+						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
+					end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
 
 					-- vtsls-only extras (buffer-local; <leader>V prefix is otherwise unused).
 					if ok_vtsls and client and client.name == "vtsls" then

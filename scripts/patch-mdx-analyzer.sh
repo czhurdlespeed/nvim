@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
-# Patch @mdx-js/language-server (mason package "mdx-analyzer", latest 0.6.3) so
+# NOTE: no longer needed as of mdx-analyzer 0.6.4 — it bundles vscode-uri 3.2.0,
+# whose ESM build exports `default`, so the unpatched shim imports fine. Kept as
+# a harmless, idempotent safeguard in case an older build is ever reinstalled.
+#
+# Patch @mdx-js/language-server (mason package "mdx-analyzer", then-latest 0.6.3) so
 # `mdx-language-server` stops crashing on startup under Node 20+ with:
 #   SyntaxError: The requested module 'vscode-uri' does not provide an export named 'default'
 #

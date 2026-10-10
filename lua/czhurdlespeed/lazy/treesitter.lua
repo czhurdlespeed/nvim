@@ -73,11 +73,11 @@ return {
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      -- Install only the parsers we don't yet have. Calling install() on
-      -- already-present parsers re-downloads them (delete-then-fetch), which
-      -- churns on every startup and can leave a parser wiped if the session
-      -- exits mid-download. Updates to installed parsers are handled by the
-      -- `build = ":TSUpdate"` hook, not here. On the very first launch a
+      -- Install only the parsers we don't yet have. install() itself already
+      -- skips installed parsers (only update()/force reinstall), so this filter
+      -- just avoids spinning up install tasks at every startup. Updates to
+      -- installed parsers are handled by the `build = ":TSUpdate"` hook, not
+      -- here. On the very first launch a
       -- freshly-opened buffer may render unhighlighted until install finishes —
       -- reopen the file once parsers land.
       local installed = {}
@@ -122,8 +122,6 @@ return {
           start(buf)
         end
       end
-
-      vim.cmd("hi! @comment guifg=#ffffff gui=italic")
     end,
   },
   {

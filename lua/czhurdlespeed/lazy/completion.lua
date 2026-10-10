@@ -12,7 +12,9 @@ return {
     "saghen/blink.cmp",
     -- Pin v1: v2 is in active, breaking development.
     version = "1.*",
-    event = "InsertEnter",
+    -- Usually loaded earlier as an lspconfig dependency; CmdlineEnter covers
+    -- `:` completion in a bare `nvim` with no file.
+    event = { "InsertEnter", "CmdlineEnter" },
     dependencies = { "L3MON4D3/LuaSnip" },
     opts = {
       snippets = { preset = "luasnip" },

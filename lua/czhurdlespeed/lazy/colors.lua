@@ -8,11 +8,6 @@ return {
         on_colors = function(colors)
           colors.comment = "#ffffff"
         end,
-        on_highlights = function(highlights, colors)
-          highlights.NonText = { fg = "#00FF00", bold = true }
-          highlights.Whitespace = { fg = "#00FF00", bold = true }
-          highlights.SpecialKey = { fg = "#00FF00", bold = true }
-        end,
       })
 
       -- ColorMyPencils: transparent-background toggle used by zen-mode.
@@ -24,9 +19,8 @@ return {
         vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
       end
 
-      vim.cmd.colorscheme("tokyonight-night")
-
-      -- Keep the green whitespace markers across any colorscheme change.
+      -- Green whitespace markers on every colorscheme (registered before the
+      -- first colorscheme call below, so it covers startup too).
       vim.api.nvim_create_autocmd("ColorScheme", {
         pattern = "*",
         callback = function()
@@ -35,6 +29,8 @@ return {
           vim.api.nvim_set_hl(0, "SpecialKey", { fg = "#00FF00", bold = true })
         end,
       })
+
+      vim.cmd.colorscheme("tokyonight-night")
 
       vim.opt.showbreak = "↪ "
     end,

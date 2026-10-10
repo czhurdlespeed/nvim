@@ -46,11 +46,8 @@ return {
       -- run :MasonInstall codelldb and this picks it up on next start, no config change.
       local codelldb = mason .. "/codelldb/extension/adapter/codelldb"
       if exists(codelldb) then
-        dap.adapters.codelldb = {
-          type = "server",
-          port = "${port}",
-          executable = { command = codelldb, args = { "--port", "${port}" } },
-        }
+        -- stdio mode (codelldb >= 1.11) — no port juggling.
+        dap.adapters.codelldb = { type = "executable", command = codelldb }
         for _, ft in ipairs({ "c", "cpp" }) do
           dap.configurations[ft] = {
             {
