@@ -34,8 +34,7 @@ return {
         "typescript", "typescriptreact",
         "vue", "svelte",
       },
-      -- New-style options (legacy user_default_options is frozen). Tailwind
-      -- lsp = true also picks up a project's custom tailwind.config colors.
+      -- New-style options; tailwind lsp also reads project tailwind.config colors
       options = {
         parsers = {
           css = true,

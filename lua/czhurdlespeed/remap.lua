@@ -35,6 +35,7 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { silent = true })
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+-- Capital X: <leader>x is the Trouble prefix and would make this wait
 vim.keymap.set("n", "<leader>X", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Source the current file (handy while editing config)

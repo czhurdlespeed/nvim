@@ -17,8 +17,11 @@ return {
             -- Reuse gitsigns' per-buffer counts instead of lualine's own git jobs.
             "diff",
             source = function()
+              -- gitsigns' cached per-buffer counts
               local g = vim.b.gitsigns_status_dict
+              -- nil outside tracked files; lualine then hides the component
               if g then
+                -- lualine calls gitsigns' "changed" "modified"
                 return { added = g.added, modified = g.changed, removed = g.removed }
               end
             end,

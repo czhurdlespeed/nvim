@@ -6,8 +6,7 @@ return {
       {
         "<leader>zz",
         function()
-          -- window.options apply only to the zen float, so nothing leaks back
-          -- onto the original window when zen closes.
+          -- window.options apply to the zen float only, so nothing leaks on close
           require("zen-mode").setup({
             window = { width = 90, options = { wrap = false, number = true, relativenumber = true } },
           })
@@ -19,6 +18,7 @@ return {
       {
         "<leader>zZ",
         function()
+          -- Same scoping; the ruler is cleared only inside the float
           require("zen-mode").setup({
             window = {
               width = 80,

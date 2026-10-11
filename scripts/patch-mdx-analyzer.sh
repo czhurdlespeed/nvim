@@ -1,22 +1,5 @@
 #!/usr/bin/env sh
-# NOTE: no longer needed as of mdx-analyzer 0.6.4 — it bundles vscode-uri 3.2.0,
-# whose ESM build exports `default`, so the unpatched shim imports fine. Kept as
-# a harmless, idempotent safeguard in case an older build is ever reinstalled.
-#
-# Patch @mdx-js/language-server (mason package "mdx-analyzer", then-latest 0.6.3) so
-# `mdx-language-server` stops crashing on startup under Node 20+ with:
-#   SyntaxError: The requested module 'vscode-uri' does not provide an export named 'default'
-#
-# Cause: its bundled `vscode-markdown-languageservice` ships an ESM shim
-# (out/util/vscodeUri.js) that DEFAULT-imports `vscode-uri`, but vscode-uri's
-# ESM build only has NAMED exports (URI, Utils) — so the default import throws.
-# We rewrite the one offending line to a namespace import, which resolves the
-# named exports. The vscode-uri version is irrelevant (3.0.x and 3.1.x both fail
-# the default import and both work with the namespace import).
-#
-# Idempotent — safe to re-run. mason reinstalling mdx-analyzer wipes
-# node_modules, so re-run this after any :MasonInstall/reinstall of it (a plain
-# :MasonUpdate won't, since 0.6.3 is already the latest). Enabled in lazy/lsp.lua.
+# Obsolete on mdx-analyzer >=0.6.4; fixes <=0.6.3 vscode-uri import (CLAUDE.md)
 set -eu
 
 SHIM="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/mason/packages/mdx-analyzer/node_modules/@mdx-js/language-server/node_modules/vscode-markdown-languageservice/out/util/vscodeUri.js"

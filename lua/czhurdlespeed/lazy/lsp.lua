@@ -18,8 +18,7 @@ return {
 			"yioneko/nvim-vtsls",
 		},
 		config = function()
-			-- Capabilities: blink.cmp's plugin/ file sets vim.lsp.config("*", { capabilities })
-			-- on 0.11+, so no per-server copy here (blink is a dependency => loads first).
+			-- No per-server capabilities: blink's plugin/ sets vim.lsp.config("*") itself
 
 			-- nvim-vtsls supplies the :VtsExec/:VtsRename commands and TS-specific
 			-- helpers (select_ts_version, goto_source_definition, ...). Guarded so a
@@ -27,38 +26,42 @@ return {
 			-- other servers configured below.
 			local ok_vtsls, vtsls = pcall(require, "vtsls")
 
-			-- Volar-based servers (astro-language-server, mdx-analyzer) wrap tsserver and
-			-- need a *classic* TypeScript SDK (tsserverlibrary.js/typescript.js). Prefer the
-			-- project's own TS so diagnostics match its version -- but only if it's classic:
-			-- TS7 (the native Go port, npm `latest` since 7.0) ships neither file, so a TS7
-			-- project lib is skipped (searching upward, for hoisted monorepo installs). Else
-			-- fall back to the pinned TS5 at ~/.local/share/nvim/ts-sdk (survives mason
-			-- updates; recreate with `npm i typescript@^5` there if wiped). Without a tsdk
-			-- they error "The typescript.tsdk init option is required" and exit 1.
+			-- Volar servers need classic TS (typescript.js); TS7 ships neither file
 			local function classic_tsdk(root)
+				-- Every node_modules up to /, so hoisted monorepo installs are found
 				local dirs = vim.fs.find("node_modules", {
 					path = root or vim.fn.getcwd(),
 					upward = true,
 					type = "directory",
 					limit = math.huge,
 				})
+				-- Nearest classic lib wins; a TS7 lib falls through to the next dir
 				for _, nm in ipairs(dirs) do
+					-- tsdk must point at typescript/lib
 					local lib = nm .. "/typescript/lib"
+					-- Either file marks a classic (pre-TS7) build
 					if vim.uv.fs_stat(lib .. "/typescript.js") or vim.uv.fs_stat(lib .. "/tsserverlibrary.js") then
+						-- Project's own TS keeps diagnostics on its version
 						return lib
 					end
 				end
 			end
 
+			-- astro/mdx before_init: project classic TS, else pinned TS5 (CLAUDE.md)
 			local function prefer_project_tsdk(_, config)
 				config.init_options = config.init_options or {}
 				config.init_options.typescript = config.init_options.typescript or {}
 				local ts = config.init_options.typescript
 				if not ts.tsdk or ts.tsdk == "" then
+					-- nil when the project has no classic TS (none, or TS7 only)
 					local tsdk = classic_tsdk(config.root_dir)
+					-- Without a tsdk Volar exits "typescript.tsdk init option is required"
 					if not tsdk then
+						-- Standalone `npm i typescript@^5` that survives mason updates
 						tsdk = vim.fs.joinpath(vim.fn.stdpath("data"), "ts-sdk", "node_modules", "typescript", "lib")
+						-- Fail loudly rather than hand Volar a dead path
 						if not vim.uv.fs_stat(tsdk .. "/typescript.js") then
+							-- Tells the user the one command that fixes it
 							vim.notify(
 								"TS5 fallback missing: run `npm i typescript@^5` in " .. vim.fn.stdpath("data") .. "/ts-sdk",
 								vim.log.levels.WARN
@@ -69,9 +72,7 @@ return {
 				end
 			end
 
-			-- Per-server settings, applied via vim.lsp.config() and enabled by the explicit
-			-- vim.lsp.enable() loop below (mason-lspconfig automatic_enable = false).
-			-- NOTE: rust is handled by rustaceanvim (see neotest.lua) — do NOT add rust_analyzer here.
+			-- Enabled by the loop below; never add rust_analyzer (rustaceanvim owns it)
 			local servers = {
 				ruff = {
 					init_options = { settings = { fixAll = true, organizeImports = true } },
@@ -156,10 +157,7 @@ return {
 				biome = {
 					workspace_required = false,
 					root_dir = function(bufnr, on_dir)
-						-- Prioritized tiers (Nvim 0.11.3+), upstream's order: lockfile root first
-						-- so a monorepo gets one server (and its node_modules/.bin/biome) rather
-						-- than one per package; Biome 2 resolves nested biome.json from there.
-						-- Then biome.json, then git root, else cwd (attach everywhere).
+						-- Lockfile root first: one Biome per monorepo, using its local binary
 						on_dir(
 							vim.fs.root(bufnr, {
 								{ "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock", "deno.lock" },
@@ -245,12 +243,17 @@ return {
 					end
 
 					vim.keymap.set("n", "gd", if_supported("textDocument/definition", fzf.lsp_definitions, "go-to-definition"), opts)
+					-- Replaces built-in grr; bare gr would wait on the gr* defaults
 					vim.keymap.set("n", "grr", if_supported("textDocument/references", fzf.lsp_references, "references"), opts)
+					-- Replaces built-in gri; bare gi is Vim's insert-at-last-insert
 					vim.keymap.set("n", "gri", if_supported("textDocument/implementation", fzf.lsp_implementations, "implementations"), opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					-- Off by default; vtsls/gopls hint settings above make it useful
 					vim.keymap.set("n", "<leader>ih", function()
+						-- Query and toggle only the attached buffer
 						local filter = { bufnr = args.buf }
+						-- Flip the current state
 						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
 					end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
 

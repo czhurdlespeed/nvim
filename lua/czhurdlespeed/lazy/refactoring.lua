@@ -2,8 +2,7 @@ return {
   {
     "theprimeagen/refactoring.nvim",
     dependencies = {
-      -- Its only dependency (bundles its own queries; no plenary/treesitter
-      -- requires). This build of refactoring.nvim does a top-level `require("async")`.
+      -- Sole dep: top-level require("async"); queries are bundled, no plenary/TS
       "lewis6991/async.nvim",
     },
     keys = {

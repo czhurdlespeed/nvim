@@ -26,20 +26,25 @@ return {
       { "<leader>fS", function() require("fzf-lua").lsp_live_workspace_symbols() end, desc = "Workspace symbols" },
     },
     opts = {},
+    -- Lazy-load fzf-lua on first vim.ui.select, so LSP-less buffers get it too
     init = function()
-      -- fzf-lua is lazy; load it on the first vim.ui.select so selects in
-      -- LSP-less buffers (e.g. <leader>rr) get fzf too. config below replaces
-      -- vim.ui.select via register_ui_select(); the guard avoids recursion if
-      -- that ever fails.
+      -- Fallback if fzf-lua ever fails to register its select
       local builtin = vim.ui.select
+      -- Forward-declared so the shim can tell whether it is still installed
       local shim
+      -- Loads fzf-lua (its config swaps in its own select), then re-dispatches
       shim = function(...)
+        -- config below runs register_ui_select(), replacing this shim
         require("lazy").load({ plugins = { "fzf-lua" } })
+        -- Still the shim means registration failed; avoid infinite recursion
         if vim.ui.select == shim then
+          -- Neovim's built-in picker
           vim.ui.select = builtin
         end
+        -- Whichever select is installed now
         return vim.ui.select(...)
       end
+      -- Replaced by fzf-lua's select on first use
       vim.ui.select = shim
     end,
     config = function(_, opts)

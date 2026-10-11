@@ -1,8 +1,7 @@
 return {
   {
     "tpope/vim-fugitive",
-    -- Not lazy: only :Git/:G would get lazy stubs, leaving :Gdiffsplit, :Gread,
-    -- :GBrowse, ... as E492 until :Git ran. fugitive is autoload-based, so cheap.
+    -- Eager: lazy stubs cover only :Git/:G, so :Gdiffsplit etc. would E492
     lazy = false,
     keys = {
       { "<leader>gs", vim.cmd.Git, desc = "Git status (fugitive)" },
@@ -13,6 +12,7 @@ return {
         group = grp,
         pattern = "fugitive",
         callback = function(ev)
+          -- Scoped to the fugitive status buffer
           local opts = { buffer = ev.buf, remap = false }
           vim.keymap.set("n", "<leader>gp", function() vim.cmd.Git("push") end, opts)
           vim.keymap.set("n", "<leader>gP", function() vim.cmd.Git({ "pull", "--rebase" }) end, opts)
@@ -40,6 +40,7 @@ return {
         map("n", "]c", function()
           if vim.wo.diff then vim.cmd.normal({ "]c", bang = true }) else gs.nav_hunk("next") end
         end, "Next git hunk")
+        -- Same diff-mode fallback, reverse direction
         map("n", "[c", function()
           if vim.wo.diff then vim.cmd.normal({ "[c", bang = true }) else gs.nav_hunk("prev") end
         end, "Prev git hunk")

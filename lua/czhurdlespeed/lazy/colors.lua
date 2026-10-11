@@ -19,8 +19,7 @@ return {
         vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
       end
 
-      -- Green whitespace markers on every colorscheme (registered before the
-      -- first colorscheme call below, so it covers startup too).
+      -- Before the first :colorscheme, so startup gets the green markers too
       vim.api.nvim_create_autocmd("ColorScheme", {
         pattern = "*",
         callback = function()
@@ -30,6 +29,7 @@ return {
         end,
       })
 
+      -- Fires the ColorScheme autocmd above
       vim.cmd.colorscheme("tokyonight-night")
 
       vim.opt.showbreak = "↪ "

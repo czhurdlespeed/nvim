@@ -34,18 +34,18 @@ for _, m in ipairs(modules) do
   check("require " .. m, ok, err)
 end
 
--- 2. Expected LSP servers enabled via the explicit vim.lsp.enable() loop
--- (vim.lsp.config[name] is non-nil for any server lspconfig ships, so it
--- proves nothing; is_enabled checks our loop actually ran).
+-- 2. is_enabled, not vim.lsp.config[]: that exists for every lspconfig server
 local servers = {
   "ruff", "pyrefly", "vtsls", "gopls", "clangd", "tailwindcss", "cssls", "html",
   "emmet_language_server", "astro", "mdx_analyzer", "biome", "marksman", "lua_ls",
 }
 for _, s in ipairs(servers) do
+  -- Proves the explicit vim.lsp.enable() loop ran for this server
   check("lsp enabled: " .. s, vim.lsp.is_enabled(s))
 end
--- rustaceanvim owns rust-analyzer; ts_ls would duplicate vtsls.
+-- rustaceanvim owns rust-analyzer; ts_ls would duplicate vtsls
 for _, s in ipairs({ "rust_analyzer", "ts_ls" }) do
+  -- Either one enabled means duplicate clients
   check("lsp NOT enabled: " .. s, not vim.lsp.is_enabled(s))
 end
 
@@ -59,6 +59,34 @@ check("conform has NO csv formatter", fbf["csv"] == nil)
 
 -- 4. mapleader is space
 check("mapleader is <space>", vim.g.mapleader == " ")
+
+-- 5. <leader>d must stay the void-delete operator, not a DAP prefix
+check("<leader>d is void-delete", vim.fn.maparg("<leader>d", "n") == [["_d]])
+-- A leader map that prefixes another waits timeoutlen before firing
+local leader_lhs = {}
+-- Global normal maps; leader shows up as a literal space
+for _, m in ipairs(vim.api.nvim_get_keymap("n")) do
+  -- Only leader maps were part of the clash cleanup
+  if vim.startswith(m.lhs, " ") then
+    -- Collected for the pairwise prefix scan below
+    table.insert(leader_lhs, m.lhs)
+  end
+end
+-- Every (shorter, longer) pair where one is a strict prefix of the other
+local clashes = {}
+-- O(n^2) is fine for ~60 maps
+for _, a in ipairs(leader_lhs) do
+  -- Compare against every other leader map
+  for _, b in ipairs(leader_lhs) do
+    -- Strict prefix only; a map never clashes with itself
+    if a ~= b and vim.startswith(b, a) then
+      -- Human-readable pair for the failure message
+      table.insert(clashes, vim.fn.keytrans(a) .. " < " .. vim.fn.keytrans(b))
+    end
+  end
+end
+-- Lists the offending pairs on failure
+check("no leader prefix clashes", #clashes == 0, table.concat(clashes, ", "))
 
 print(("\n=== %s (%d failure%s) ==="):format(
   failures == 0 and "ALL PASSED" or "FAILURES",

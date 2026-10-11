@@ -55,9 +55,7 @@ vim.api.nvim_create_autocmd("FileChangedShellPost", {
   end,
 })
 
--- Diagnostics. 0.11+ turned virtual_text off by default (signs + underline
--- only); show it on the cursor line only to keep noise down. Global (not in
--- LspAttach) because nvim-lint diagnostics need it too.
+-- Global, not LspAttach: nvim-lint diagnostics use this config too
 vim.diagnostic.config({
   severity_sort = true,
   virtual_text = { current_line = true },

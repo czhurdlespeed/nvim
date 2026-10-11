@@ -16,10 +16,11 @@ return {
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
         group = grp,
         callback = function(args)
-          -- shellcheck lints the file on disk (not stdin) once it exists, so on
-          -- InsertLeave with unsaved edits its diagnostics land on stale lines.
+          -- Decides whether the shellcheck staleness guard applies
           local ft = vim.bo[args.buf].filetype
+          -- shellcheck reads the file on disk, so unsaved InsertLeave lints stale lines
           if args.event == "InsertLeave" and vim.bo[args.buf].modified and (ft == "sh" or ft == "bash") then
+            -- BufWritePost will lint the saved copy
             return
           end
           require("lint").try_lint()

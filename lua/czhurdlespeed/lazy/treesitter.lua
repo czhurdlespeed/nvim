@@ -73,13 +73,7 @@ return {
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      -- Install only the parsers we don't yet have. install() itself already
-      -- skips installed parsers (only update()/force reinstall), so this filter
-      -- just avoids spinning up install tasks at every startup. Updates to
-      -- installed parsers are handled by the `build = ":TSUpdate"` hook, not
-      -- here. On the very first launch a
-      -- freshly-opened buffer may render unhighlighted until install finishes —
-      -- reopen the file once parsers land.
+      -- Missing-only; install() skips installed ones, this just avoids task churn
       local installed = {}
       for _, lang in ipairs(require("nvim-treesitter.config").get_installed("parsers")) do
         installed[lang] = true
@@ -129,12 +123,13 @@ return {
     branch = "main",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = { "BufReadPost", "BufNewFile" },
+    -- Per-ft, not global no_plugin_maps, so markdown keeps its ]] [[ jumps
     init = function()
-      -- Runtime ftplugins map buffer-local ]] [[ (and ]m [m for python), which beat
-      -- the global textobject moves below. Opt out per-filetype, not via the global
-      -- no_plugin_maps, so markdown's ]] [[ section jumps survive.
+      -- python.vim's buffer-local ]] [[ ]m [m shadow the textobject moves
       vim.g.no_python_maps = true
+      -- go.vim's buffer-local ]] [[ shadow them too
       vim.g.no_go_maps = true
+      -- rust.vim's buffer-local ]] [[ shadow them too
       vim.g.no_rust_maps = true
     end,
     config = function()
